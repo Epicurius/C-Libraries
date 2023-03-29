@@ -3,7 +3,7 @@
  * vim: ts=4 sw=4 tw=80 et ai si
  *
  * Created: 14/05/2021 Niklas Neronin
- * Updated: 26/03/2023 Niklas Neronin
+ * Updated: 29/03/2023 Niklas Neronin
  */
 
 #include "libpf.h"
@@ -41,7 +41,7 @@ static long double	cast_float(t_pf *p)
 	return nb;
 }
 
-static int	pf_float_decimal(t_pf *p, long nb, int precision)
+static int	pf_float_decimal(t_pf *p, long long nb, int precision)
 {
 	int		i, a, b;
 	char	str[48];
