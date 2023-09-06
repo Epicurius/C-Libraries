@@ -420,6 +420,9 @@ int test_color()
 	ft_printf("{ITALIC}ITALIC{RESET}?\n");
 	ft_printf("{UND}UND{RESET}?\n");
 	ft_printf("{INVERT}INVERT{RESET}?\n");
+	ft_printf("{CLR:41}CLR:41{RESET}?\n");
+	ft_printf("{CLR:41?\n");
+	ft_printf("{CLR:Marko{CLR:200}Polo{RESET}?\n");
 }
 
 int main()
