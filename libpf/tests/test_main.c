@@ -407,8 +407,25 @@ int unit_test(char *file, int (*func)(const char * restrict, ...))
 	close(fd2);
 }
 
+int test_color()
+{
+	ft_printf("{RESET}RESET{RESET}?\n");
+	ft_printf("{RED}RED{RESET}?\n");
+	ft_printf("{GREEN}GREEN{RESET}?\n");
+	ft_printf("{YELLOW}YELLOW{RESET}?\n");
+	ft_printf("{BLUE}BLUE{RESET}?\n");
+	ft_printf("{MAGENTA}MAGENTA{RESET}?\n");
+	ft_printf("{CYAN}CYAN{RESET}?\n");
+	ft_printf("{BOLD}BOLD{RESET}?\n");
+	ft_printf("{ITALIC}ITALIC{RESET}?\n");
+	ft_printf("{UND}UND{RESET}?\n");
+	ft_printf("{INVERT}INVERT{RESET}?\n");
+}
+
 int main()
 {
+	test_color();
+
 	unit_test("ft_printf.txt", ft_printf);
 	unit_test("printf.txt", printf);
 	compareFiles("ft_printf.txt", "printf.txt");
