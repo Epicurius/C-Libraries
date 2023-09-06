@@ -10,17 +10,17 @@
 
 static const t_pf_style	g_pf_styles[11] =
 {
-	{"{RESET}", "\x1b[0m", 7},
+	{"{RESET}", "\x1b[00m", 7},
 	{"{RED}", "\x1b[31m", 5},
 	{"{GREEN}", "\x1b[32m", 7},
 	{"{YELLOW}", "\x1b[33m", 8},
 	{"{BLUE}", "\x1b[34m", 6},
 	{"{MAGENTA}", "\x1b[35m", 9},
 	{"{CYAN}", "\x1b[36m", 6},
-	{"{BOLD}", "\x1b[1m", 6},
-	{"{ITALIC}", "\x1b[3m", 8},
-	{"{UND}", "\x1b[4m", 5},
-	{"{INVERT}", "\x1b[7m", 8}
+	{"{BOLD}", "\x1b[01m", 6},
+	{"{ITALIC}", "\x1b[03m", 8},
+	{"{UND}", "\x1b[04m", 5},
+	{"{INVERT}", "\x1b[07m", 8}
 };
 
 static int	color_code(t_pf *p, int i)
@@ -47,13 +47,10 @@ static int	color_code(t_pf *p, int i)
 	return 1;
 }
 
-static void	pf_style(t_pf *p, int i)
+static void	color_preset(t_pf *p)
 {
-	i = -1;
-	if (ft_strncmp(&*p->format, "{CLR:", 5) && color_code(p, 5))
-		return ;
-	while (++i < 11) {
-		if (ft_strncmp(g_pf_styles[i].str, &*p->format, g_pf_styles[i].len)) {
+	for (int i = 0; i < 11; i++) {
+		if (!ft_strncmp(g_pf_styles[i].str, &*p->format, g_pf_styles[i].len)) {
 			if (fileno(p->fp) < 3)
 				fill_buffer(p, g_pf_styles[i].code, 5);
 			p->format += g_pf_styles[i].len - 1;
@@ -65,8 +62,13 @@ static void	pf_style(t_pf *p, int i)
 
 void	pf_specials(t_pf *p)
 {
-	if (*p->format == '{' && (*p->format + 1) && ft_isupper(*(p->format + 1)))
-		pf_style(p, -1);
-	else
+	if (*p->format == '{' && ft_isupper(*(p->format + 1))) {
+		if (!ft_strncmp(&*p->format, "{CLR:", 5))
+			color_code(p, 5);
+		else
+			color_preset(p);
+	}
+	else {
 		fill_buffer(p, p->format, 1);
+	}
 }
