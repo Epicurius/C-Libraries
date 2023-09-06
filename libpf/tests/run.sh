@@ -1,21 +1,19 @@
 #!/bin/bash
 
-FILES="./tests/test_main.c -I . ./libpf.a ../libft/libft.a -I ../libft/"
+FILES="./tests/test_main.c -I . ./libpf.a ../libft/libft.a -I ../libft"
 
-make
+make fclean
+make -j8
 
 if [ "$OSTYPE" == "linux-gnu" ] ; then
-    gcc $FILES -fsanitize=address
+    gcc $FILES
     ./a.out
-    rm a.out
 elif [ "$OSTYPE" == "darwin"* ] ; then
     gcc $FILES -fsanitize=address
     ./a.out
-    rm a.out
 elif [ "$OSTYPE" == "msys" ] ; then
     gcc $FILES
     ./a.exe
-    rm a.exe
 else
     echo "OS is not supported."
 fi
