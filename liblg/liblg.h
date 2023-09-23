@@ -24,14 +24,10 @@ enum
 
 # define LG_PRINT_STD	stderr 
 
-# define LG_DEBUG(...)	lg_log(LEVEL_DEBUG, __TIME__, __FILE__, __FUNCTION__, \
-							   __LINE__, __VA_ARGS__)
-# define LG_INFO(...)	lg_log(LEVEL_INFO,	__TIME__, __FILE__, __FUNCTION__, \
-							   __LINE__, __VA_ARGS__)
-# define LG_WARN(...)	lg_log(LEVEL_WARN,	__TIME__, __FILE__, __FUNCTION__, \
-							   __LINE__, __VA_ARGS__)
-# define LG_ERROR(...)	lg_log(LEVEL_ERROR, __TIME__, __FILE__, __FUNCTION__, \
-							   __LINE__, __VA_ARGS__)
+# define LG_DEBUG(...)	lg_log(LEVEL_DEBUG, __TIME__, __FILE__, __LINE__, __VA_ARGS__)
+# define LG_INFO(...)	lg_log(LEVEL_INFO,	__TIME__, __FILE__, __LINE__, __VA_ARGS__)
+# define LG_WARN(...)	lg_log(LEVEL_WARN,	__TIME__, __FILE__, __LINE__, __VA_ARGS__)
+# define LG_ERROR(...)	lg_log(LEVEL_ERROR, __TIME__, __FILE__, __LINE__, __VA_ARGS__)
 
 typedef struct s_lgEvent
 {
@@ -56,6 +52,6 @@ int			lg_openFile(char *file, char *mode);
 int			lg_closeFile(void);
 int			lg_setFile(FILE *fp);
 void		lg_setLevel(int std, int file);
-void		lg_log(int lvl, const char *time, const char *file,
-				   const char *func, int line, const char *fmt, ...);
+void		lg_log(int lvl, const char *time, const char *file, int line,
+				   const char *fmt, ...);
 #endif

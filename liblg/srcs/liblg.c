@@ -69,21 +69,19 @@ static void	lg_write(lg_event *ev)
 
 	vsnprintf(buff, 100, ev->fmt, ev->ap);
 	if (ev->lvl >= lg_global.stdlvl) {
-		fprintf(LG_PRINT_STD, "%s[%-5s]\x1b[0m \x1b[90m%s:%d\x1b[0m : ",
-			lg_colors[ev->lvl], lg_levels[ev->lvl], ev->func, ev->line);
-		fprintf(LG_PRINT_STD, "%s\n", buff);
+		fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n%s\n\n",
+			    lg_colors[ev->lvl], lg_levels[ev->lvl], ev->file, ev->line, buff);
 		fflush(LG_PRINT_STD);
 	}
 	if (lg_global.fp && ev->lvl >= lg_global.filelvl) {
-		fprintf(lg_global.fp, "%s %-5s:\t\t%s\t\t",
-			ev->time, lg_levels[ev->lvl], buff);
-		fprintf(lg_global.fp, "[%s : %s : %d]\n", ev->file, ev->func, ev->line);
+		fprintf(lg_global.fp, "%s %-5s %s:%d\n%s\n",
+			    ev->time, lg_levels[ev->lvl], ev->file, ev->line, buff);
 		fflush(lg_global.fp);
 	}
 }
 
-void	lg_log(int lvl, const char *time, const char *file, const char *func,
-	           int line, const char *fmt, ...)
+void	lg_log(int lvl, const char *time, const char *file, int line,
+			   const char *fmt, ...)
 {
 	lg_event	ev;
 
@@ -91,7 +89,6 @@ void	lg_log(int lvl, const char *time, const char *file, const char *func,
 		ev.fmt = fmt;
 		ev.time = time;
 		ev.file = file;
-		ev.func = func;
 		ev.line = line;
 		ev.lvl = lvl;
 		va_start(ev.ap, fmt);
