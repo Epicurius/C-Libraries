@@ -29,17 +29,6 @@ enum
 # define LG_WARN(...)	lg_log(LEVEL_WARN,	__TIME__, __FILE__, __LINE__, __VA_ARGS__)
 # define LG_ERROR(...)	lg_log(LEVEL_ERROR, __TIME__, __FILE__, __LINE__, __VA_ARGS__)
 
-typedef struct s_lgEvent
-{
-	va_list		ap;
-	const char	*fmt;
-	const char	*time;
-	const char	*file;
-	const char	*func;
-	int			line;
-	int			lvl;
-}				lg_event;
-
 typedef struct g_log
 {
 	FILE		*fp;
@@ -52,6 +41,10 @@ int			lg_openFile(char *file, char *mode);
 int			lg_closeFile(void);
 int			lg_setFile(FILE *fp);
 void		lg_setLevel(int std, int file);
-void		lg_log(int lvl, const char *time, const char *file, int line,
-				   const char *fmt, ...);
+void		lg_fwrite(int lvl, const char *file, int line, const char *time,
+					  const char *fmt, va_list ap);
+void		lg_write(int lvl, const char *file, int line,
+					 const char *fmt, va_list ap);
+void		lg_log(int lvl, const char *time, const char *file,
+				   int line, const char *fmt, ...);
 #endif

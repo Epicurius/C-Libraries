@@ -63,39 +63,44 @@ void	lg_setLevel(int std, int file)
 	lg_global.filelvl = file;
 }
 
-static void	lg_write(lg_event *ev)
+void	lg_fwrite(int lvl, const char *file, int line, const char *time,
+	const char *fmt, va_list ap)
 {
-	if (ev->lvl >= lg_global.stdlvl) {
-		fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
-			    lg_colors[ev->lvl], lg_levels[ev->lvl], ev->file, ev->line);
-		vfprintf(LG_PRINT_STD, ev->fmt, ev->ap);
-		fflush(LG_PRINT_STD);
-		fwrite("\n\n", 2, 1, LG_PRINT_STD);
-	}
-	if (lg_global.fp && ev->lvl >= lg_global.filelvl) {
-		fprintf(lg_global.fp, "%s %-5s %s:%d\n",
-			    ev->time, lg_levels[ev->lvl], ev->file, ev->line);
-		vfprintf(lg_global.fp, ev->fmt, ev->ap);
-		fflush(lg_global.fp);
-		fwrite("\n", 1, 1, lg_global.fp);
-	}
+	fprintf(lg_global.fp, "%s %-5s %s:%d\n", time, lg_levels[lvl], file, line);
+	vfprintf(lg_global.fp, fmt, ap);
+	fflush(lg_global.fp);
+	fwrite("\n", 1, 1, LG_PRINT_STD);
+}
+
+void	lg_write(int lvl, const char *file, int line, const char *fmt,
+	va_list ap)
+{
+	fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
+			lg_colors[lvl], lg_levels[lvl], file, line);
+	vfprintf(LG_PRINT_STD, fmt, ap);
+	fflush(LG_PRINT_STD);
+	fwrite("\n\n", 2, 1, LG_PRINT_STD);
 }
 
 void	lg_log(int lvl, const char *time, const char *file, int line,
-			   const char *fmt, ...)
+	const char *fmt, ...)
 {
-	lg_event	ev;
-
-	if ((lg_global.fp && lvl >= lg_global.filelvl) || lvl >= lg_global.stdlvl) {
-		ev.fmt = fmt;
-		ev.time = time;
-		ev.file = file;
-		ev.line = line;
-		ev.lvl = lvl;
-		va_start(ev.ap, fmt);
-		lg_write(&ev);
-		va_end(ev.ap);
+	va_list ap;
+	if (lvl >= lg_global.stdlvl)
+	{
+		va_start(ap, fmt);
+		lg_write(lvl, file, line, fmt, ap);
+		va_end(ap);
 	}
-	if (lvl == LEVEL_ERROR)
-		exit(1);
+	if (lg_global.fp && lvl >= lg_global.filelvl)
+	{
+		va_start(ap, fmt);
+		lg_fwrite(lvl, file, line, time, fmt, ap);
+		va_end(ap);
+	}
+
+	if (lvl == LEVEL_ERROR) {
+		lg_closeFile();
+		exit (1);
+	}
 }
