@@ -22,7 +22,12 @@ static const char *lg_colors[] = {
 	"\x1b[31m"
 };
 
-struct g_log	lg_global = {NULL, -1, -1};
+struct g_log	lg_global = {
+	.fp=NULL,
+	.stdlvl=-1,
+	.filelvl=-1,
+	.mutex=PTHREAD_MUTEX_INITIALIZER
+};
 
 int	lg_openFile(char *file, char *mode)
 {
@@ -66,20 +71,24 @@ void	lg_setLevel(int std, int file)
 void	lg_fwrite(int lvl, const char *file, int line, const char *time,
 	const char *fmt, va_list ap)
 {
+	pthread_mutex_lock(&lg_global.mutex);
 	fprintf(lg_global.fp, "%s %-5s %s:%d\n", time, lg_levels[lvl], file, line);
 	vfprintf(lg_global.fp, fmt, ap);
 	fflush(lg_global.fp);
 	fwrite("\n", 1, 1, LG_PRINT_STD);
+	pthread_mutex_unlock(&lg_global.mutex);
 }
 
 void	lg_write(int lvl, const char *file, int line, const char *fmt,
 	va_list ap)
 {
+	pthread_mutex_lock(&lg_global.mutex);
 	fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
 			lg_colors[lvl], lg_levels[lvl], file, line);
 	vfprintf(LG_PRINT_STD, fmt, ap);
 	fflush(LG_PRINT_STD);
 	fwrite("\n\n", 2, 1, LG_PRINT_STD);
+	pthread_mutex_unlock(&lg_global.mutex);
 }
 
 void	lg_log(int lvl, const char *time, const char *file, int line,

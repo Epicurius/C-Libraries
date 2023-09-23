@@ -9,6 +9,7 @@
 #ifndef LIBLG_H
 # define LIBLG_H
 
+# include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdarg.h>
@@ -29,12 +30,13 @@ enum
 # define LG_WARN(...)	lg_log(LEVEL_WARN,	__TIME__, __FILE__, __LINE__, __VA_ARGS__)
 # define LG_ERROR(...)	lg_log(LEVEL_ERROR, __TIME__, __FILE__, __LINE__, __VA_ARGS__)
 
-typedef struct g_log
+typedef struct		g_log
 {
-	FILE		*fp;
-	int			stdlvl;
-	int			filelvl;
-}				g_log;
+	FILE			*fp;
+	int				stdlvl;
+	int				filelvl;
+	pthread_mutex_t	mutex;
+}					g_log;
 
 /* File: ./liblg.c */
 int			lg_openFile(char *file, char *mode);
