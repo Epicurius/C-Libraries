@@ -43,17 +43,24 @@ int	lg_closeFile(void)
 	return fclose(lg_global.fp);
 }
 
-void	lg_addFile(FILE *fp)
+int	lg_setFile(FILE *fp)
 {
+	if (lg_global.fp && fp) {
+		LG_INFO("File already set.");
+		return 0;
+	}
+
 	lg_global.fp = fp;
+	if (!lg_global.fp)
+		LG_INFO("File pointer set to 'NULL'.");
+
+	return 1;
 }
 
 void	lg_setLevel(int std, int file)
 {
-	if (std < 3)
-		lg_global.stdlvl = std;
-	if (file < 3)
-		lg_global.filelvl = file;
+	lg_global.stdlvl = std;
+	lg_global.filelvl = file;
 }
 
 static void	lg_write(lg_event *ev)

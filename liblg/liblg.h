@@ -54,7 +54,7 @@ typedef struct g_log
 /* File: ./liblg.c */
 int			lg_openFile(char *file, char *mode);
 int			lg_closeFile(void);
-void		lg_addFile(FILE *fp);
+int			lg_setFile(FILE *fp);
 void		lg_setLevel(int std, int file);
 void		lg_log(int lvl, const char *time, const char *file,
 				   const char *func, int line, const char *fmt, ...);
