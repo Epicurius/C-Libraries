@@ -65,18 +65,19 @@ void	lg_setLevel(int std, int file)
 
 static void	lg_write(lg_event *ev)
 {
-	char		buff[100];
-
-	vsnprintf(buff, 100, ev->fmt, ev->ap);
 	if (ev->lvl >= lg_global.stdlvl) {
-		fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n%s\n\n",
-			    lg_colors[ev->lvl], lg_levels[ev->lvl], ev->file, ev->line, buff);
+		fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
+			    lg_colors[ev->lvl], lg_levels[ev->lvl], ev->file, ev->line);
+		vfprintf(LG_PRINT_STD, ev->fmt, ev->ap);
 		fflush(LG_PRINT_STD);
+		fwrite("\n\n", 2, 1, LG_PRINT_STD);
 	}
 	if (lg_global.fp && ev->lvl >= lg_global.filelvl) {
-		fprintf(lg_global.fp, "%s %-5s %s:%d\n%s\n",
-			    ev->time, lg_levels[ev->lvl], ev->file, ev->line, buff);
+		fprintf(lg_global.fp, "%s %-5s %s:%d\n",
+			    ev->time, lg_levels[ev->lvl], ev->file, ev->line);
+		vfprintf(lg_global.fp, ev->fmt, ev->ap);
 		fflush(lg_global.fp);
+		fwrite("\n", 1, 1, lg_global.fp);
 	}
 }
 
