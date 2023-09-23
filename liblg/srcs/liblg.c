@@ -8,6 +8,20 @@
 
 #include "liblg.h"
 
+static const char *lg_levels[] = {
+	"DEBUG",
+	"INFO",
+	"WARN",
+	"ERROR"
+};
+
+static const char *lg_colors[] = {
+	"\x1b[36m",
+	"\x1b[32m",
+	"\x1b[33m",
+	"\x1b[31m"
+};
+
 struct g_log	lg_global = {NULL, -1, -1};
 
 int	lg_openFile(char *file, char *mode)
@@ -41,18 +55,17 @@ void	lg_setLevel(int std, int file)
 static void	lg_write(lg_event *ev)
 {
 	char		buff[100];
-	const char	*l[] = {"DEBUG", "INFO", "WARN", "ERROR"};
-	const char	*c[] = {"\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m"};
 
 	vsnprintf(buff, 100, ev->fmt, ev->ap);
 	if (ev->lvl >= lg_global.stdlvl) {
 		fprintf(LG_PRINT_STD, "%s[%-5s]\x1b[0m \x1b[90m%s:%d\x1b[0m : ",
-			c[ev->lvl], l[ev->lvl], ev->func, ev->line);
+			lg_colors[ev->lvl], lg_levels[ev->lvl], ev->func, ev->line);
 		fprintf(LG_PRINT_STD, "%s\n", buff);
 		fflush(LG_PRINT_STD);
 	}
 	if (lg_global.fp && ev->lvl >= lg_global.filelvl) {
-		fprintf(lg_global.fp, "%s %-5s:\t\t%s\t\t", ev->time, l[ev->lvl], buff);
+		fprintf(lg_global.fp, "%s %-5s:\t\t%s\t\t",
+			ev->time, lg_levels[ev->lvl], buff);
 		fprintf(lg_global.fp, "[%s : %s : %d]\n", ev->file, ev->func, ev->line);
 		fflush(lg_global.fp);
 	}
