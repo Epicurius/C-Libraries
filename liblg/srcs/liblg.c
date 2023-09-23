@@ -3,7 +3,7 @@
  * vim: ts=4 sw=4 tw=80 et ai si
  * 
  * Created: 29/03/2023 Niklas Neronin
- * Updated: 29/03/2023 Niklas Neronin
+ * Updated: 23/09/2023 Niklas Neronin
  */
 
 #include "liblg.h"
@@ -51,7 +51,7 @@ static void	lg_write(lg_event *ev)
 		fprintf(LG_PRINT_STD, "%s\n", buff);
 		fflush(LG_PRINT_STD);
 	}
-	if (ev->lvl >= lg_global.filelvl) {
+	if (lg_global.fp && ev->lvl >= lg_global.filelvl) {
 		fprintf(lg_global.fp, "%s %-5s:\t\t%s\t\t", ev->time, l[ev->lvl], buff);
 		fprintf(lg_global.fp, "[%s : %s : %d]\n", ev->file, ev->func, ev->line);
 		fflush(lg_global.fp);
