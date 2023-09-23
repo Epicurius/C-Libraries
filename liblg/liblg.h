@@ -10,10 +10,17 @@
 # define LIBLG_H
 
 # include <pthread.h>
+
+# define LG_USE_LIBPF
+
+#ifdef LG_USE_LIBPF
+# include "../libpf/libpf.h"
+# include "../libft/libft.h"
+#else
 # include <stdio.h>
-# include <stdlib.h>
 # include <stdarg.h>
-# include <stdio.h>
+# include <stdlib.h>
+#endif
 
 enum
 {

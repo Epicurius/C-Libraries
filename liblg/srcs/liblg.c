@@ -72,10 +72,17 @@ void	lg_fwrite(int lvl, const char *file, int line, const char *time,
 	const char *fmt, va_list ap)
 {
 	pthread_mutex_lock(&lg_global.mutex);
-	fprintf(lg_global.fp, "%s %-5s %s:%d\n", time, lg_levels[lvl], file, line);
+#ifdef LG_USE_LIBPF
+	ft_fprintf(lg_global.fp, "%s %-5s %s:%d\n",
+			   time, lg_levels[lvl], file, line);
+	ft_vfprintf(lg_global.fp, fmt, ap);
+#else
+	fprintf(lg_global.fp, "%s %-5s %s:%d\n",
+	        time, lg_levels[lvl], file, line);
 	vfprintf(lg_global.fp, fmt, ap);
 	fflush(lg_global.fp);
-	fwrite("\n", 1, 1, LG_PRINT_STD);
+#endif
+	fwrite("\n", 1, 1, lg_global.fp);
 	pthread_mutex_unlock(&lg_global.mutex);
 }
 
@@ -83,10 +90,16 @@ void	lg_write(int lvl, const char *file, int line, const char *fmt,
 	va_list ap)
 {
 	pthread_mutex_lock(&lg_global.mutex);
+#ifdef LG_USE_LIBPF
+	ft_fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
+			lg_colors[lvl], lg_levels[lvl], file, line);
+	ft_vfprintf(LG_PRINT_STD, fmt, ap);
+#else
 	fprintf(LG_PRINT_STD, "%s%-5s\x1b[0m \x1b[90m%s:%d\x1b[0m\n",
 			lg_colors[lvl], lg_levels[lvl], file, line);
 	vfprintf(LG_PRINT_STD, fmt, ap);
 	fflush(LG_PRINT_STD);
+#endif
 	fwrite("\n\n", 2, 1, LG_PRINT_STD);
 	pthread_mutex_unlock(&lg_global.mutex);
 }
