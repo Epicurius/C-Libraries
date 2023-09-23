@@ -29,19 +29,23 @@ int	lg_openFile(char *file, char *mode)
 	lg_global.fp = fopen(file, mode);
 	if (lg_global.fp == NULL)
 		return 0;
+
 	LG_INFO("Log Opened.");
 	return 1;
+}
+
+int	lg_closeFile(void)
+{
+	if (lg_global.fp == NULL)
+		return 1;
+
+	LG_INFO("Log Closed.");
+	return fclose(lg_global.fp);
 }
 
 void	lg_addFile(FILE *fp)
 {
 	lg_global.fp = fp;
-}
-
-void	lg_closeFile(void)
-{
-	LG_INFO("Log Closed.");
-	fclose(lg_global.fp);
 }
 
 void	lg_setLevel(int std, int file)

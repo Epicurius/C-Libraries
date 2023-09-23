@@ -3,7 +3,7 @@
  * vim: ts=4 sw=4 tw=80 et ai si
  * 
  * Created: 29/03/2023 Niklas Neronin
- * Updated: 29/03/2023 Niklas Neronin
+ * Updated: 23/09/2023 Niklas Neronin
  */
 
 #ifndef LIBLG_H
@@ -53,8 +53,8 @@ typedef struct g_log
 
 /* File: ./liblg.c */
 int			lg_openFile(char *file, char *mode);
+int			lg_closeFile(void);
 void		lg_addFile(FILE *fp);
-void		lg_closeFile(void);
 void		lg_setLevel(int std, int file);
 void		lg_log(int lvl, const char *time, const char *file,
 				   const char *func, int line, const char *fmt, ...);
